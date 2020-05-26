@@ -335,7 +335,7 @@ namespace Utf8Json.Formatters
             {
                 kind = DateTimeKind.Utc;
             }
-            else if (i < to && array[i] == '-' || array[i] == '+')
+            else if (i < to && (array[i] == '-' || array[i] == '+'))
             {
                 if (!(i + 5 < to)) goto ERROR;
 
@@ -681,7 +681,7 @@ namespace Utf8Json.Formatters
 
             END_TICKS:
 
-            if (i < to && array[i] == '-' || array[i] == '+')
+            if (i < to && (array[i] == '-' || array[i] == '+'))
             {
                 if (!(i + 5 < to)) goto ERROR;
 
@@ -843,6 +843,30 @@ namespace Utf8Json.Formatters
             if (nanosecond != 0)
             {
                 writer.WriteRawUnsafe((byte)'.');
+                if (nanosecond < 1000000)
+                {
+                    writer.WriteRawUnsafe((byte)'0');
+                    if (nanosecond < 100000)
+                    {
+                        writer.WriteRawUnsafe((byte)'0');
+                        if (nanosecond < 10000)
+                        {
+                            writer.WriteRawUnsafe((byte)'0');
+                            if (nanosecond < 1000)
+                            {
+                                writer.WriteRawUnsafe((byte)'0');
+                                if (nanosecond < 100)
+                                {
+                                    writer.WriteRawUnsafe((byte)'0');
+                                    if (nanosecond < 10)
+                                    {
+                                        writer.WriteRawUnsafe((byte)'0');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 writer.WriteInt64(nanosecond);
             }
 
@@ -967,7 +991,7 @@ namespace Utf8Json.Formatters
                 : ts.Add(tk);
 
             ERROR:
-            throw new InvalidOperationException("invalid datetime format. value:" + StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
+            throw new InvalidOperationException("invalid timespan format. value:" + StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
         }
     }
 }
