@@ -1247,6 +1247,7 @@ namespace Utf8Json
         }
     }
 
+    [Serializable]
     public class JsonParsingException : Exception
     {
         WeakReference underyingBytes;
